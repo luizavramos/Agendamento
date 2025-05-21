@@ -1,0 +1,33 @@
+type Usuario {
+    id: ID!
+    nome: String!
+    email: String!
+    senha: String!
+    tipo: String!
+    ativo: Boolean
+}
+
+type Consulta {
+    id: ID!
+    paciente: Usuario!
+    medico: Usuario!
+    dataHora: String!
+    observacoes: String
+    status: String!
+    criadoEm: String
+}
+
+type Query {
+    listarUsuarios: [Usuario]
+    buscarUsuarioPorId(id: ID!): Usuario
+    listarConsultas: [Consulta]
+    consultasPorPaciente(pacienteId: ID!): [Consulta]
+    consultasFuturasPorPaciente(pacienteId: ID!): [Consulta]
+}
+
+type Mutation {
+    criarUsuario(nome: String!, email: String!, senha: String!, tipo: String!): Usuario
+    desativarUsuario(id: ID!): Usuario
+    criarConsulta(pacienteId: ID!, medicoId: ID!, dataHoraStr: String!, observacoes: String): Consulta
+    editarConsulta(id: ID!, dataHoraStr: String, observacoes: String, status: String): Consulta
+}
