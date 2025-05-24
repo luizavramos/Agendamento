@@ -1,19 +1,30 @@
 package com.tech_challenge.agendamento_service.kafka;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tech_challenge.agendamento_service.model.Consulta;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class ConsultaProducer {
 
-    private static final String TOPIC = "consultas";
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    private KafkaTemplate<String, Consulta> kafkaTemplate;
+    private static final String TOPICO = "consulta.eventos";
 
-    public void enviarEventoConsulta(Consulta consulta) {
-        kafkaTemplate.send(TOPIC, consulta);
+    public void enviarEventoConsultaCriada(Consulta consulta) {
+        try {
+            String payload = objectMapper.writeValueAsString(consulta);
+            kafkaTemplate.send(TOPICO, payload);
+            System.out.println("Consulta enviada para Kafka: " + payload);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Erro ao serializar consulta para Kafka", e);
+        }
     }
 }

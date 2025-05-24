@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 public class ConsultaDTO {
     private Long id;
-    private UsuarioDTO paciente;
-    private UsuarioDTO medico;
     private LocalDateTime dataHora;
     private String observacoes;
     private String status;

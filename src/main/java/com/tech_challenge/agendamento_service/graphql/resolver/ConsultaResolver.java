@@ -1,37 +1,31 @@
 package com.tech_challenge.agendamento_service.graphql.resolver;
 
+import com.tech_challenge.agendamento_service.dto.ConsultaInput;
 import com.tech_challenge.agendamento_service.model.Consulta;
 import com.tech_challenge.agendamento_service.service.ConsultaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-
 @Controller
 public class ConsultaResolver {
 
-    @Autowired
-    private ConsultaService consultaService;
-
-    @MutationMapping
-    public Consulta criarConsulta(Long pacienteId, Long medicoId, String dataHora, String observacoes) {
-        return consultaService.criarConsulta(pacienteId, medicoId, dataHora, observacoes);
-    }
-
-    @MutationMapping
-    public Consulta editarConsulta(Long id, String dataHora, String observacoes, String status) {
-        return consultaService.editarConsulta(id, dataHora, observacoes, status);
+    private final ConsultaService service;
+    public ConsultaResolver(ConsultaService service) {
+        this.service = service;
     }
 
     @QueryMapping
-    public List<Consulta> consultasPorPaciente(Long pacienteId) {
-        return consultaService.consultasPorPaciente(pacienteId);
+    public List<Consulta> consultasPorPaciente(@Argument String pacienteId) {
+        return service.buscarPorPaciente(pacienteId);
     }
 
-    @QueryMapping
-    public List<Consulta> consultasFuturasPorPaciente(Long pacienteId) {
-        return consultaService.consultasFuturasPorPaciente(pacienteId);
+    @MutationMapping
+    public Consulta criarConsulta(@Argument ConsultaInput input) {
+        return service.criarConsulta(input);
     }
 }
